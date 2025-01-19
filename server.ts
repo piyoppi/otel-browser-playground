@@ -10,13 +10,15 @@ import {
   ConsoleMetricExporter,
 } from '@opentelemetry/sdk-metrics'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
-import {
-  SimpleSpanProcessor,
-} from '@opentelemetry/sdk-trace-base'
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions'
+import { Resource } from '@opentelemetry/resources'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const sdk = new NodeSDK({
+  resource: new Resource ({
+    [ATTR_SERVICE_NAME]: 'my-service',
+  }),
   traceExporter: new OTLPTraceExporter({
     url: 'http://localhost:55681/v1/traces',
   }),
@@ -49,6 +51,18 @@ app.use('/test', async ({json}) => {
   await fetch('https://garakuta-toolbox.com/rss.xml')
 
   await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  await fetch('https://garakuta-toolbox.com/rss2.xml')
+
+  return json({message: 'test'})
+})
+
+app.use('/test2', async ({json}) => {
+  await fetch('https://garakuta-toolbox.com/rss.xml')
+
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  await fetch('https://garakuta-toolbox.com/rss2.xml')
 
   return json({message: 'test'})
 })
