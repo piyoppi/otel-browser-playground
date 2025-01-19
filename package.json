@@ -13,10 +13,18 @@
     "vite": "^6.0.5"
   },
   "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "@hono/vite-dev-server": "^0.18.0",
     "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.55.2",
     "@opentelemetry/context-zone": "^1.30.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.57.0",
     "@opentelemetry/instrumentation-document-load": "^0.44.0",
-    "@opentelemetry/sdk-trace-web": "^1.30.0"
+    "@opentelemetry/instrumentation-fetch": "^0.57.1",
+    "@opentelemetry/sdk-metrics": "^1.30.0",
+    "@opentelemetry/sdk-node": "^0.57.0",
+    "@opentelemetry/sdk-trace-node": "^1.30.0",
+    "@opentelemetry/sdk-trace-web": "^1.30.0",
+    "hono": "^4.6.16"
   }
 }
