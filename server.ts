@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-import path, { join } from 'node:path'
+import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Hono } from 'hono'
 import { NodeSDK } from '@opentelemetry/sdk-node'
@@ -12,6 +12,7 @@ import {
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions'
 import { Resource } from '@opentelemetry/resources'
+
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -47,7 +48,7 @@ app.use('/', async ({html}) => {
   return html(template)
 })
 
-app.use('/test', async ({json}) => {
+app.use('/api/test', async ({json}) => {
   await fetch('https://garakuta-toolbox.com/rss.xml')
 
   await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -57,7 +58,7 @@ app.use('/test', async ({json}) => {
   return json({message: 'test'})
 })
 
-app.use('/test2', async ({json}) => {
+app.use('/api/test2', async ({json}) => {
   await fetch('https://garakuta-toolbox.com/rss.xml')
 
   await new Promise((resolve) => setTimeout(resolve, 1000))
