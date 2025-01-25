@@ -7,8 +7,8 @@ export default defineConfig({
     port: 5174,
   },
   plugins: [
-    devServer({
-      entry: 'server.ts',
-    }),
+    //devServer({
+    //  entry: 'server.ts',
+    //}),
   ],
 })
