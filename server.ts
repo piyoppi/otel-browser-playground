@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Hono } from 'hono'
 import { NodeSDK } from '@opentelemetry/sdk-node'
 import { context, trace } from '@opentelemetry/api';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
@@ -30,47 +29,46 @@ const sdk = new NodeSDK({
 
 sdk.start()
 
-//const tracer = trace.getTracer('example')
+import { createServer as createViteServer } from 'vite'
 
-const app = new Hono()
+const vite = await createViteServer({
+  server: { middlewareMode: true },
+  appType: 'custom'
+})
 
-app.use('/', async ({html}) => {
+import express from 'express'
+
+const app = express()
+const router = express.Router()
+
+app.use(vite.middlewares)
+
+router.get('/', async (_req, res) => {
   let template = fs.readFileSync(
     path.resolve(__dirname, 'index.html'),
     'utf-8',
   )
 
-  //const span = trace.getSpan(context.active())
+  await new Promise((resolve) => setTimeout(resolve, 500))
+
   const span = trace.getActiveSpan()
   console.log(span)
-  //if (span) {
-  //  const traceparent = `00-${span.spanContext().traceId}-${span.spanContext().spanId}-01`;
-  //  template = template.replace(`<!--traceparent-->`, () => traceparent)
-  //}
+  if (span) {
+    const traceparent = `00-${span.spanContext().traceId}-${span.spanContext().spanId}-01`;
+    template = template.replace(`<!--traceparent-->`, () => traceparent)
+  }
 
-  return html(template)
+  res.send(template)
 })
 
-app.use('/api/test', async ({json}) => {
+router.get('/api/test', async (_req, res) => {
   await fetch('https://garakuta-toolbox.com/rss.xml')
 
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
-  return json({message: 'test'})
+  res.json({message: 'test'})
 })
 
-//app.use('/api/test2', async ({json}) => {
-//  await fetch('https://garakuta-toolbox.com/rss.xml')
-//
-//  const activeContext = context.active()
-//  const span = tracer.startSpan('wait', { kind: 1 }, activeContext)
-//  span.setAttribute('duration', '1000')
-//  await new Promise((resolve) => setTimeout(resolve, 1000))
-//  span.end()
-//
-//  await fetch('https://garakuta-toolbox.com/rss2.xml')
-//
-//  return json({message: 'test'})
-//})
+app.use(router)
 
-export default app
+app.listen(5174)

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node server2.ts",
+    "dev": "node --loader=@opentelemetry/instrumentation/hook.mjs server.ts",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
